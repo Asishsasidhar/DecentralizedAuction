@@ -1,4 +1,5 @@
 {
+  "homepage": "https://asishsasidhar.github.io/DecentralizedAuction/",
   "name": "frontend",
   "version": "1.0.0",
   "description": "Auction Dapp powered by Ethereum",
@@ -6,11 +7,14 @@
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "pre-deploy": "npm run build",
+    "deploy" : "gh-pages -d build",
     "start": "npm run dev",
     "build": "node build/build.js"
   },
   "dependencies": {
     "ethereumjs-util": "^5.1.5",
+    "gh-pages": "^6.1.1",
     "moment": "^2.22.0",
     "vue": "^2.5.2",
     "vue-resource": "^1.5.0",
