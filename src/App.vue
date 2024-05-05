@@ -529,7 +529,8 @@ export default {
           this.selectedDeed
         );
         this.$deedRepoInstance.watchIfDeedTransfered((error, result) => {
-          if (!error) this.transferDeedSuccess = true;
+          if (!error){ this.transferDeedSuccess = true;
+          }
           this.transferingDeed = false;
         });
       } catch (e) {
