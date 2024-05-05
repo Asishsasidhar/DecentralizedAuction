@@ -4,12 +4,12 @@
       <v-container
         v-scroll="onScroll"
         class="homepage"
-        style="padding: 0px"
+        style="padding:0px;"
         fluid
       >
         <v-navigation-drawer
           class="pl-drawer"
-          style="background-color: rgba(0, 0, 0, 0.76)"
+          style="background-color: rgba(0, 0, 0, 0.76);"
           disable-resize-watcher
           disable-route-watcher
           fixed
@@ -50,23 +50,23 @@
               class="peer-toolbar"
               fixed
               dark
-              style="padding-top: 5px"
+              style="padding-top: 5px;"
             >
               <v-toolbar-side-icon
                 @click="drawer = !drawer"
-                style="position: fixed"
+                style="position: fixed;"
                 v-show="!$vuetify.breakpoint.mdAndUp"
               ></v-toolbar-side-icon>
               <v-toolbar-title
                 v-show="$vuetify.breakpoint.mdAndUp"
-                style="font-weight: 100"
+                style="font-weight:100;"
                 class="white--text"
                 >Auction Dapp</v-toolbar-title
               >
               <v-spacer></v-spacer>
               <div
                 v-show="!$vuetify.breakpoint.mdAndUp"
-                style="min-height: 49px"
+                style="min-height:49px;"
               ></div>
               <div v-show="$vuetify.breakpoint.mdAndUp">
                 <v-btn @click="showAuction()" outline color="white">
@@ -100,7 +100,7 @@
           </v-toolbar>
           <v-divider></v-divider>
           <v-list v-show="!networkReady" three-line subheader>
-            <v-subheader style="color: red">
+            <v-subheader style="color:red;">
               <v-icon color="red">error</v-icon>
               Error: Please make sure metamask is installed and connected to a
               network with an account selected
@@ -117,7 +117,7 @@
                 <v-card class="mb-5">
                   <v-layout xs12 sm12 md12 row wrap>
                     <v-flex
-                      style="height: 100%; padding-bottom: 20px"
+                      style="height:100%; padding-bottom:20px;"
                       xs12
                       sm12
                       md12
@@ -136,12 +136,12 @@
                       ></v-text-field>
                       <div v-show="createAssetSuccess">
                         <v-icon color="teal">check_circle</v-icon>
-                        <h3 style="color: green !important">
+                        <h3 style="color:green !important;">
                           asset was successfully created
                         </h3>
                       </div>
                       <div v-show="creatingAssetError">
-                        <h3 style="color: red !important">
+                        <h3 style="color:red !important;">
                           {{ creatingAssetError }}
                         </h3>
                       </div>
@@ -180,13 +180,13 @@
                 <v-card class="mb-5">
                   <v-layout xs12 sm12 md12 row wrap>
                     <v-flex
-                      style="height: 100%; padding-bottom: 20px"
+                      style="height:100%; padding-bottom:20px;"
                       xs12
                       sm12
                       md12
                     >
                       <v-flex
-                        style="height: 100%; padding-bottom: 20px"
+                        style="height:100%; padding-bottom:20px;"
                         xs12
                         sm12
                         md12
@@ -199,7 +199,7 @@
                       </v-flex>
                       <div v-show="transferDeedSuccess">
                         <v-icon color="teal">check_circle</v-icon>
-                        <h3 style="color: green !important">
+                        <h3 style="color:green !important;">
                           Ownership was successfully transfered
                         </h3>
                       </div>
@@ -213,8 +213,8 @@
                       <v-btn
                         :disabled="
                           selectedDeed == null ||
-                          transferDeedSuccess ||
-                          transferingDeed
+                            transferDeedSuccess ||
+                            transferingDeed
                         "
                         @click="transferTo()"
                         outline
@@ -242,7 +242,7 @@
                 <v-card class="mb-5">
                   <v-layout xs12 sm12 md12 row wrap>
                     <v-flex
-                      style="height: 100%; padding-bottom: 20px"
+                      style="height:100%; padding-bottom:20px;"
                       xs12
                       sm12
                       md12
@@ -255,7 +255,7 @@
                     </v-flex>
 
                     <v-flex
-                      style="height: 100%; padding-bottom: 20px"
+                      style="height:100%; padding-bottom:20px;"
                       xs12
                       sm12
                       md12
@@ -269,17 +269,17 @@
                     </v-flex>
 
                     <v-flex
-                      style="height: 100%; padding-bottom: 20px"
+                      style="height:100%; padding-bottom:20px;"
                       xs12
                       sm12
                       md12
                     >
-                      <b style="color: red">Image(png/jpg):</b>
+                      <b style="color:red;">Image(png/jpg):</b>
                       <input type="file" @change="fileSelectionEvent($event)" />
                     </v-flex>
 
                     <v-flex
-                      style="height: 100%; padding-bottom: 20px"
+                      style="height:100%; padding-bottom:20px;"
                       xs12
                       sm12
                       md12
@@ -300,7 +300,7 @@
                                             ></v-text-field>
                                     </v-flex> -->
                     <v-flex
-                      style="height: 100%; padding-bottom: 20px"
+                      style="height:100%; padding-bottom:20px;"
                       xs12
                       sm6
                       md6
@@ -313,7 +313,7 @@
                       ></v-text-field>
                     </v-flex>
                     <v-flex
-                      style="height: 100%; padding-bottom: 20px"
+                      style="height:100%; padding-bottom:20px;"
                       xs12
                       sm6
                       md6
@@ -327,7 +327,7 @@
                       ></v-text-field>
                     </v-flex>
                     <v-flex
-                      style="height: 100%; padding-bottom: 20px"
+                      style="height:100%; padding-bottom:20px;"
                       xs12
                       sm6
                       md6
@@ -350,7 +350,7 @@
       <v-dialog v-model="loadingModal" persistent max-width="290">
         <v-card>
           <v-card-title class="headline">Please wait</v-card-title>
-          <v-card-text style="text-align: center">
+          <v-card-text style="text-align: center;">
             <v-progress-circular
               indeterminate
               v-bind:size="50"
@@ -366,26 +366,12 @@
       <div
         v-show="statusPopup"
         class="dialog bottom-sheet bottom-sheet--inset dialog--active dialog--persistent"
-        style="
-          background-color: white;
-          max-width: 100% !important;
-          -webkit-box-align: center;
-          align-items: center;
-          display: flex; /* height: 100%; */
-          -webkit-box-pack: center;
-          justify-content: center;
-          left: 0px;
-          position: fixed;
-          bottom: 0px;
-          transition: 0.3s ease-in-out;
-          z-index: 6;
-          outline: none;
-        "
+        style="background-color:white; max-width: 100% !important; -webkit-box-align: center;align-items: center;display: flex;/* height: 100%; */-webkit-box-pack: center;justify-content: center;left: 0px;position: fixed;bottom: 0px;transition: 0.3s ease-in-out;z-index: 6;outline: none;"
       >
-        <div style="cursor: pointer; position: absolute; top: 0; right: 0">
+        <div style="cursor: pointer; position:absolute; top:0; right:0;">
           <v-icon @click="closeStatus()">clear</v-icon>
         </div>
-        <v-layout style="padding: 10px" wrap row>
+        <v-layout style="padding:10px;" wrap row>
           <v-flex xs12 sm4 md4>
             <div v-show="getMetamaskInstalled">
               <v-icon color="teal">check_circle</v-icon> Metamask installed
@@ -442,7 +428,7 @@ export default {
     // deed model
     deed: {
       deedId: null,
-      deedURI: "",
+      deedURI: ""
     },
 
     // selected deed for transfer
@@ -462,7 +448,7 @@ export default {
       timeInBlocks: 0,
       startingPrice: null,
       reservePrice: null,
-      fileInput: null,
+      fileInput: null
     },
 
     // network status popup
@@ -479,7 +465,7 @@ export default {
     offsetTop: 0,
 
     // error handling
-    error: null,
+    error: null
   }),
   computed: {
     networkReady() {
@@ -520,18 +506,18 @@ export default {
       return this.offsetTop > 40
         ? "pl-darkbg-toolbar"
         : "pl-transparentbg-toolbar";
-    },
+    }
   },
   watch: {
     // watch for the property for changes and update the associated filed
-    "auction.timeInDays": function (val) {
+    "auction.timeInDays": function(val) {
       let now = new Date();
       let tms = now.setDate(now.getDate() + parseInt(val));
 
       // ~15 seconds per block
       this.auction.timeInBlocks = parseInt(tms / 1000);
       //this.auction.timeInBlocks = val * 86400 / 15
-    },
+    }
   },
   methods: {
     async transferTo() {
@@ -558,17 +544,16 @@ export default {
         this.loadingModal = true;
 
         // create from data and attach the auction property
-        let formData = new FormData();
-        Object.keys(this.auction).map((key) => {
-          formData.append(key, this.auction[key]);
-        });
-        const response = await this.$http.post(
-          `${this.$config.BZZ_ENDPOINT}/bzz:/`,
-          formData
-        );
-        this.auction.metadata = response.body;
 
-        console.log(this.auction);
+        // TODO refactor for new version bee
+        //                let formData = new FormData()
+        //                Object.keys(this.auction).map((key) => {
+        //                    formData.append(key, this.auction[key])
+        //                })
+        //                const response = await this.$http.post(`${this.$config.BZZ_ENDPOINT}/bzz:/`, formData)
+        //                this.auction.metadata = response.body
+
+        //                console.log(this.auction)
 
         // create the smart contract
         this.$auctionRepoInstance.setAccount(this.getWeb3DefaultAccount);
@@ -600,7 +585,7 @@ export default {
         this.createAssetError = null;
 
         this.$deedRepoInstance.setAccount(this.getWeb3DefaultAccount);
-        var trnasaction = await this.$deedRepoInstance.create(
+        var transaction = await this.$deedRepoInstance.create(
           this.deed.deedId,
           this.deed.deedURI
         );
@@ -680,16 +665,16 @@ export default {
         return localStorageItems;
       }
       return false;
-    },
+    }
   },
   mounted() {
     let localStorageItems = this.getLocalStorageItems();
     if (localStorageItems) {
-      localStorageItems.map((deed) => {
+      localStorageItems.map(deed => {
         this.deeds.push(deed);
       });
     }
-  },
+  }
 };
 </script>
 <style>
