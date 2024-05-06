@@ -127,6 +127,17 @@
           </div>
           <div style="margin-top:13px;">
             <v-btn
+              @click="getAllBids(auc.id)"
+              :disabled="!isAuctionOwner(auc) || !auc.active"
+              style=" margin:0; width:100%;"
+              color="teal"
+              dark
+            >
+              get All Bids
+            </v-btn>
+          </div>
+          <div style="margin-top:13px;">
+            <v-btn
               @click="cancelAuction(auc.id)"
               :disabled="!isAuctionOwner(auc) || !auc.active"
               style=" margin:0; width:100%;"
@@ -343,6 +354,39 @@ export default {
         this.getAuction(this.$route.params.id);
         this.loadingModal = false;
       });
+    },
+
+    async getAllBids(auctionId) {
+      this.bidModal = false;
+      // this.loadingModal = true;
+      console.log("aucio repo: ", this.$auctionRepoInstance);
+      this.$auctionRepoInstance.setAccount(
+        this.$root.$data.globalState.getWeb3DefaultAccount()
+      );
+      try {
+        const result = await this.$auctionRepoInstance.getAllBids(auctionId);
+        console.log("result: ", result);
+      } catch (err) {
+        console.log(":erer: ", err);
+      }
+
+      this.loadingModal = false;
+    },
+
+    async extendDeadline(val) {
+      let now = new Date();
+      let tms = now.setDate(now.getDate() + parseInt(val));
+
+      // ~15 seconds per block
+      let timeInBlocks = parseInt(tms / 1000);
+      this.$auctionRepoInstance.setAccount(
+        this.$root.$data.globalState.getWeb3DefaultAccount()
+      );
+      const result = await this.$auctionRepoInstance.extendDeadline(
+        auctionId,
+        timeInBlocks
+      );
+      console.log("rejsult: ", result);
     },
     async cancelAuction(auctionId) {
       this.loadingModal = true;

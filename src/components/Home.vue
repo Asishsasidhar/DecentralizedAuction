@@ -164,16 +164,16 @@ export default {
     const count = await this.$auctionRepoInstance.getCount();
     for (let i = 0; i < count; i++) {
       let auction = await this.$auctionRepoInstance.findById(i);
-      let bidCount = await this.$auctionRepoInstance.getBidCount(auctionId);
-      let lastBidAmount = 0,
-        lastBidAccount = "N/A";
-      if (bidCount > 0) {
-        const res = await this.$auctionRepoInstance.getCurrentBid(auctionId);
-        lastBidAmount = this.$auctionRepoInstance
-          .getWeb3()
-          .utils.fromWei(res[0], "ether");
-        lastBidAccount = res[1];
-      }
+      // let bidCount = await this.$auctionRepoInstance.getBidCount(auctionId);
+      // let lastBidAmount = 0,
+      //   lastBidAccount = "N/A";
+      // if (bidCount > 0) {
+      //   const res = await this.$auctionRepoInstance.getCurrentBid(auctionId);
+      //   lastBidAmount = this.$auctionRepoInstance
+      //     .getWeb3()
+      //     .utils.fromWei(res[0], "ether");
+      //   lastBidAccount = res[1];
+      // }
       // get metadata
 
       // TODO Refactor for new version bee
