@@ -45,6 +45,16 @@ export class AuctionRepository {
       cb
     );
   }
+  async watchIfModified(cb) {
+    const currentBlock = await this.getCurrentBlock();
+    this.contractInstance.events.AuctionModified(
+      {
+        filter: {},
+        fromBlock: currentBlock - 1
+      },
+      cb
+    );
+  }
 
   async watchIfBidSuccess(cb) {
     const currentBlock = await this.getCurrentBlock();
@@ -139,19 +149,17 @@ export class AuctionRepository {
     console.log(auctionId, this.web3.utils.toWei(price, "ether"));
     return new Promise(async (resolve, reject) => {
       try {
-        this.contractInstance.methods
-          .bidOnAuction(auctionId)
-          .send(
-            {
-              from: this.account,
-              gas: this.gas,
-              value: this.web3.utils.toWei(price, "ether")
-            },
-            function(err, transaction) {
-              if (!err) resolve(transaction);
-              reject(err);
-            }
-          );
+        this.contractInstance.methods.bidOnAuction(auctionId).send(
+          {
+            from: this.account,
+            gas: this.gas,
+            value: this.web3.utils.toWei(price, "ether")
+          },
+          function(err, transaction) {
+            if (!err) resolve(transaction);
+            reject(err);
+          }
+        );
       } catch (e) {
         reject(e);
       }
@@ -242,6 +250,41 @@ export class AuctionRepository {
       try {
         this.contractInstance.methods
           .getAllBids(auctionId)
+          .call({ from: this.account, gas: this.gas }, function(
+            err,
+            transaction
+          ) {
+            if (!err) resolve(transaction);
+            reject(err);
+          });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+  withdrawBid(auctionId) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        this.contractInstance.methods
+          .withdrawBid(auctionId)
+          .call({ from: this.account, gas: this.gas }, function(
+            err,
+            transaction
+          ) {
+            if (!err) resolve(transaction);
+            reject(err);
+          });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+  extendDeadline(timeStamp, auctionId) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        this.contractInstance.methods
+          .extendDeadline(timeStamp, auctionId)
           .call({ from: this.account, gas: this.gas }, function(
             err,
             transaction

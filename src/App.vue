@@ -511,6 +511,7 @@ export default {
   watch: {
     // watch for the property for changes and update the associated filed
     "auction.timeInDays": function(val) {
+      console.log("in day: ", val);
       let now = new Date();
       let tms = now.setDate(now.getDate() + parseInt(val));
 
@@ -530,9 +531,10 @@ export default {
         );
         this.$deedRepoInstance.watchIfDeedTransfered((error, result) => {
           if (!error) {
-            console.log("treu: ", error);
+            console.log("treu: ", result);
             this.transferDeedSuccess = true;
           }
+          console.log("error: ", error);
           this.transferingDeed = false;
         });
       } catch (e) {
