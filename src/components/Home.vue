@@ -164,18 +164,31 @@ export default {
     const count = await this.$auctionRepoInstance.getCount();
     for (let i = 0; i < count; i++) {
       let auction = await this.$auctionRepoInstance.findById(i);
+      let bidCount = await this.$auctionRepoInstance.getBidCount(auctionId);
+      let lastBidAmount = 0,
+        lastBidAccount = "N/A";
+      if (bidCount > 0) {
+        const res = await this.$auctionRepoInstance.getCurrentBid(auctionId);
+        lastBidAmount = this.$auctionRepoInstance
+          .getWeb3()
+          .utils.fromWei(res[0], "ether");
+        lastBidAccount = res[1];
+      }
       // get metadata
 
-// TODO Refactor for new version bee
-//
-//      const swarmResult = await this.$http.get(
-//        `${this.$config.BZZ_ENDPOINT}/bzz-list:/${auction[3]}`
-//      );
-      let imageUrl = "";
-//      swarmResult.body.entries.map(entry => {
-//        if ("contentType" in entry)
-//          imageUrl = `${this.$config.BZZ_ENDPOINT}/bzz-raw:/${auction[3]}/${entry.path}`;
-//      });
+      // TODO Refactor for new version bee
+      //
+      //      const swarmResult = await this.$http.get(
+      //        `${this.$config.BZZ_ENDPOINT}/bzz-list:/${auction[3]}`
+      //      );
+      console.log("auction: ", auction);
+      let imageUrl =
+        "https://b975-2603-8000-58f0-7e20-f1b1-aea-701e-179c.ngrok-free.app/ipfs/QmbV8gYk6xQ46ZrZqYtmTXvqaFTZpFXj1JKPbkTbXg8cue";
+
+      //      swarmResult.body.entries.map(entry => {
+      //        if ("contentType" in entry)
+      //          imageUrl = `${this.$config.BZZ_ENDPOINT}/bzz-raw:/${auction[3]}/${entry.path}`;
+      //      });
       this.auctions.push({
         id: i,
         image: imageUrl,

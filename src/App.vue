@@ -529,7 +529,8 @@ export default {
           this.selectedDeed
         );
         this.$deedRepoInstance.watchIfDeedTransfered((error, result) => {
-          if (!error){ this.transferDeedSuccess = true;
+          if (!error) {
+            this.transferDeedSuccess = true;
           }
           this.transferingDeed = false;
         });
@@ -547,14 +548,17 @@ export default {
         // create from data and attach the auction property
 
         // TODO refactor for new version bee
-        //                let formData = new FormData()
-        //                Object.keys(this.auction).map((key) => {
-        //                    formData.append(key, this.auction[key])
-        //                })
-        //                const response = await this.$http.post(`${this.$config.BZZ_ENDPOINT}/bzz:/`, formData)
-        //                this.auction.metadata = response.body
+        let formData = new FormData();
+        Object.keys(this.auction).map(key => {
+          formData.append(key, this.auction[key]);
+        });
+        const response = await this.$http.post(
+          `${this.$config.BZZ_ENDPOINT}/bzz:/`,
+          formData
+        );
+        this.auction.metadata = response.body;
 
-        //                console.log(this.auction)
+        console.log(this.auction);
 
         // create the smart contract
         this.$auctionRepoInstance.setAccount(this.getWeb3DefaultAccount);

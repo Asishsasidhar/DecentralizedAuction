@@ -10,6 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@web3-storage/w3up-client": "^13.0.0",
     "ethereumjs-util": "^5.1.5",
     "moment": "^2.22.0",
     "vue": "^2.5.2",
