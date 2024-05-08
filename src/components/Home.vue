@@ -102,34 +102,42 @@
           <v-card-actions>
             <v-btn
               :disabled="!auction.active"
-              @click="openAuction(auction.id)"
+              @click="openAuction(auction.id, index)"
               outline
               color="teal"
               flat
               >Bid</v-btn
             >
-            <v-btn @click="openAuction(auction.id)" outline color="blue" flat
+            <v-btn
+              @click="openAuction(auction.id, index)"
+              outline
+              color="blue"
+              flat
               >Chat</v-btn
             >
 
             <v-btn
               @click="pauseAuction(auction.id)"
-              :disabled="!auction.finalized && !auction.active"
-              style=" margin:0; width:100%;"
+              :disabled="
+                auction.finalized || !auction.active || !isAuctionOwner(auction)
+              "
+              outline
               color="teal"
-              dark
+              flat
             >
-              Pause Auction
+              Pause
             </v-btn>
 
             <v-btn
               @click="resumeAuction(auction.id)"
-              :disabled="!auction.finalized && auction.active"
-              style=" margin:0; width:100%;"
+              :disabled="
+                auction.finalized || auction.active || !isAuctionOwner(auction)
+              "
+              outline
               color="teal"
-              dark
+              flat
             >
-              Resume Auction
+              Resume
             </v-btn>
 
             <v-spacer></v-spacer>
@@ -175,8 +183,13 @@ export default {
     }
   },
   methods: {
-    openAuction(id) {
-      this.$router.push({ name: "Auction", params: { id: id } });
+    openAuction(id, index) {
+      this.$router.push({ name: "Auction", params: { id: id, index: index } });
+    },
+    isAuctionOwner(auction) {
+      return (
+        auction.owner == this.$root.$data.globalState.getWeb3DefaultAccount()
+      );
     },
     async pauseAuction(auctionId) {
       // this.loadingModal = true;
@@ -209,6 +222,15 @@ export default {
   async mounted() {
     this.$auctionRepoInstance.setAccount("");
     const count = await this.$auctionRepoInstance.getCount();
+    let ids = [
+      "QmdfXLmujhV6rt8qUWta7egTUmwJsvJXyoLT1bZfp8GqSf",
+      "QmbPZfeFevgdVnMotTC3FwRucn7X9vkqU6RSqELU6EiJu7",
+      "QmZajP5HatoTMCj3DHNkEwiKG8wo3hyYDXqVw2TapwDhb7",
+      "QmbV8gYk6xQ46ZrZqYtmTXvqaFTZpFXj1JKPbkTbXg8cue",
+      "QmXR8KxrnaE4bLH9W6Z8rSwMfup6NU2rSc5ZqaMz9ztwcz",
+      "QmegMccc2Ldi6ZwL3GhZvT7NcyazkRrTqrpcdLf1tAbGpR",
+      "QmNpbUusuj366iPEHkx6tYQPhkftcaXi8fgnVh9L6Bf1ax"
+    ];
     for (let i = 0; i < count; i++) {
       let auction = await this.$auctionRepoInstance.findById(i);
       // let bidCount = await this.$auctionRepoInstance.getBidCount(auctionId);
@@ -229,8 +251,7 @@ export default {
       //        `${this.$config.BZZ_ENDPOINT}/bzz-list:/${auction[3]}`
       //      );
       console.log("auction: ", auction);
-      let imageUrl =
-        "https://b975-2603-8000-58f0-7e20-f1b1-aea-701e-179c.ngrok-free.app/ipfs/QmbV8gYk6xQ46ZrZqYtmTXvqaFTZpFXj1JKPbkTbXg8cue";
+      let imageUrl = `https://gateway.pinata.cloud/ipfs/${ids[i]}`;
 
       //      swarmResult.body.entries.map(entry => {
       //        if ("contentType" in entry)

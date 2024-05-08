@@ -128,7 +128,7 @@
           <div style="margin-top:13px;">
             <v-btn
               @click="getAllBids(auc.id)"
-              :disabled="!isAuctionOwner(auc) || !auc.active"
+              :disabled="!isAuctionOwner(auc)"
               style=" margin:0; width:100%;"
               color="teal"
               dark
@@ -136,10 +136,29 @@
               get All Bids
             </v-btn>
           </div>
+          <div>
+            <v-btn @click="cancel" v-show="showtable">Cancel</v-btn>
+            <table v-show="showtable">
+              <tr>
+                <th>From</th>
+                <th>Amount</th>
+              </tr>
+
+              <tbody>
+                <tr v-for="bid in allbids" :key="bid.key">
+                  <td>{{ bid.from }}</td>
+                  <td>
+                    {{ bid.amount }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
           <div style="margin-top:13px;">
             <v-btn
               @click="withdrawBid(auc.id)"
-              :disabled="!isAuctionOwner(auc) || !auc.active"
+              :disabled="!auc.active"
               style=" margin:0; width:100%;"
               color="teal"
               dark
@@ -149,10 +168,13 @@
           </div>
           <div style="margin-top:13px;">
             <v-text-field
+              dark
               v-model="newDeadline"
               placeholder="30 Days"
               label="extension (in days)"
               persistent-hint
+              color="white"
+              style="color: white"
             ></v-text-field>
             <v-btn
               @click="extendDeadline(auc.id)"
@@ -195,6 +217,7 @@
         </v-carousel>
       </v-flex>
     </v-layout>
+
     <v-layout
       style=" color: white; padding: 25px; text-align: center;     background-color: rgb(3, 46, 66);"
       align-center
@@ -248,6 +271,7 @@
           <v-divider></v-divider>
         </v-card>
       </v-flex>
+
       <v-flex xs12 sm9 md9>
         <v-card>
           <v-list three-line>
@@ -361,10 +385,15 @@ export default {
     myMessage: "",
     messages: [],
     users: [],
-    newDeadline: 0
+    newDeadline: 0,
+    showtable: false,
+    allbids: {}
   }),
   computed: {},
   methods: {
+    cancel() {
+      this.showtable = false;
+    },
     convertAuctionIDtoPaddedHex(auctionId) {
       return `0x${("00000000" + auctionId.toString(16)).substr(-8)}`;
     },
@@ -407,13 +436,28 @@ export default {
         this.$root.$data.globalState.getWeb3DefaultAccount()
       );
       try {
-        const result = await this.$auctionRepoInstance.getAllBids(auctionId);
+        let result = await this.$auctionRepoInstance.getAllBids(auctionId);
         console.log("result: ", result);
+        console.table(result);
+        let web3 = this.$auctionRepoInstance.getWeb3();
+        console.log("web3: ", web3);
+
+        let temp = JSON.parse(JSON.stringify(result));
+        console.log("temp: ", temp);
+        console.table(temp);
+        for (let i = 0; i < temp.length; i++) {
+          temp[i].from = temp[i][0];
+          temp[i].amount = web3.utils.fromWei(temp[i][1], "ether");
+        }
+        this.allbids = temp;
       } catch (err) {
         console.log(":erer: ", err);
       }
 
       this.loadingModal = false;
+      this.showtable = true;
+      console.log("value is ", this.showtable);
+      console.table(this.allbids);
     },
 
     async withdrawBid(auctionId) {
@@ -554,6 +598,15 @@ export default {
       }
     },
     async getAuction(auctionId) {
+      let ids = [
+        "QmdfXLmujhV6rt8qUWta7egTUmwJsvJXyoLT1bZfp8GqSf",
+        "QmbPZfeFevgdVnMotTC3FwRucn7X9vkqU6RSqELU6EiJu7",
+        "QmZajP5HatoTMCj3DHNkEwiKG8wo3hyYDXqVw2TapwDhb7",
+        "QmbV8gYk6xQ46ZrZqYtmTXvqaFTZpFXj1JKPbkTbXg8cue",
+        "QmXR8KxrnaE4bLH9W6Z8rSwMfup6NU2rSc5ZqaMz9ztwcz",
+        "QmegMccc2Ldi6ZwL3GhZvT7NcyazkRrTqrpcdLf1tAbGpR",
+        "QmNpbUusuj366iPEHkx6tYQPhkftcaXi8fgnVh9L6Bf1ax"
+      ];
       this.$auctionRepoInstance.setAccount("");
       let bidCount = await this.$auctionRepoInstance.getBidCount(auctionId);
       let lastBidAmount = 0,
@@ -572,8 +625,13 @@ export default {
       // TODO Refactor for new version bee
       //                   const ipfsResult = await this.$http.get('')
       //                    const swarmResult = await this.$http.get(`${this.$config.BZZ_ENDPOINT}/bzz-list:/${auction[3]}`)
-      let imageUrl =
-        "https://b975-2603-8000-58f0-7e20-f1b1-aea-701e-179c.ngrok-free.app/ipfs/QmY5QriMq94eS7qhs1bpbGyV4wo3zbLcoEQXUZoh7pJLZX";
+      let cid = auction.metadata;
+      console.log("cid: ", cid);
+
+      let index = this.$route.params.index;
+      console.log("index: ", index);
+
+      let imageUrl = `https://gateway.pinata.cloud/ipfs/${ids[index]}`;
       //                    swarmResult.body.entries.map((entry) => {
       //                        if('contentType' in entry) imageUrl = `${this.$config.BZZ_ENDPOINT}/bzz-raw:/${auction[3]}/${entry.path}`
       //                    })
@@ -624,5 +682,35 @@ export default {
   min-width: 0px !important;
   width: 40px !important;
   height: 40px !important;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: auto !important;
+  word-wrap: break-word;
+}
+
+td {
+  padding: 24px;
+  text-align: center;
+  border-bottom: 1px solid rgb(224, 242, 237);
+}
+
+th {
+  padding: 10px 10px;
+  font-size: 12px;
+  background-color: rgb(224, 242, 237);
+  text-transform: uppercase;
+  color: black;
+  text-align: center;
+}
+
+.table-rows:nth-child(odd) {
+  background-color: rgb(250, 250, 250);
+}
+
+.table-rows:nth-child(n):hover {
+  background-color: rgb(244, 246, 245);
 }
 </style>
