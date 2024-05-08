@@ -111,6 +111,27 @@
             <v-btn @click="openAuction(auction.id)" outline color="blue" flat
               >Chat</v-btn
             >
+
+            <v-btn
+              @click="pauseAuction(auction.id)"
+              :disabled="!auction.finalized && !auction.active"
+              style=" margin:0; width:100%;"
+              color="teal"
+              dark
+            >
+              Pause Auction
+            </v-btn>
+
+            <v-btn
+              @click="resumeAuction(auction.id)"
+              :disabled="!auction.finalized && auction.active"
+              style=" margin:0; width:100%;"
+              color="teal"
+              dark
+            >
+              Resume Auction
+            </v-btn>
+
             <v-spacer></v-spacer>
           </v-card-actions>
           <v-slide-y-transition>
@@ -156,6 +177,32 @@ export default {
   methods: {
     openAuction(id) {
       this.$router.push({ name: "Auction", params: { id: id } });
+    },
+    async pauseAuction(auctionId) {
+      // this.loadingModal = true;
+      this.$auctionRepoInstance.setAccount(
+        this.$root.$data.globalState.getWeb3DefaultAccount()
+      );
+      const result = await this.$auctionRepoInstance.pause(auctionId);
+      this.$auctionRepoInstance.watchIfPaused((error, result) => {
+        // this.loadingModal = false;
+        location.reload();
+        if (!error) console.log("pause Event catched: ", result);
+        else console.log("pause Event catched: ", result);
+        // this.getAuction(this.$route.params.id);
+      });
+    },
+    async resumeAuction(auctionId) {
+      // this.loadingModal = true;
+      this.$auctionRepoInstance.setAccount(
+        this.$root.$data.globalState.getWeb3DefaultAccount()
+      );
+      const result = await this.$auctionRepoInstance.resume(auctionId);
+      this.$auctionRepoInstance.watchIfPaused((error, result) => {
+        location.reload();
+        // this.loadingModal = false;
+        // this.getAuction(this.$route.params.id);
+      });
     }
   },
 

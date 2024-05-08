@@ -241,7 +241,7 @@
                 </v-badge>
               </v-list-tile-avatar>
               <v-list-tile-content>
-                <v-list-tile-title v-html="item.identity"></v-list-tile-title>
+                <v-list-tile-title v-html="item.username"></v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
           </v-list>
@@ -263,11 +263,11 @@
                 <v-list-tile-content>
                   <v-list-tile-title
                     style="font-size:14px; color:gray;"
-                    v-html="item.identity"
+                    v-html="item.sender"
                   ></v-list-tile-title>
                   <v-list-tile-sub-title
                     style="font-size:17px; color:black;"
-                    v-html="item.data"
+                    v-html="item.text"
                   ></v-list-tile-sub-title>
                 </v-list-tile-content>
               </v-list-tile>
@@ -334,6 +334,19 @@
 <script>
 import { AuctionRepository } from "../models/AuctionRepository";
 import moment from "moment";
+import io from "socket.io-client";
+
+const options = {
+  "force new connection": true,
+  reconnectionAttempt: "Infinity",
+  timeout: 10000,
+  transports: ["websocket"]
+};
+const socket = io(
+  "https://socketchatbackend-production.up.railway.app/",
+  options
+);
+
 export default {
   data: () => ({
     auction: [],
@@ -432,16 +445,25 @@ export default {
       this.$auctionRepoInstance.setAccount(
         this.$root.$data.globalState.getWeb3DefaultAccount()
       );
+
       const result = await this.$auctionRepoInstance.extendDeadline(
         timeInBlocks,
         auctionId
       );
       console.log("rejsult: ", result);
+
       this.$auctionRepoInstance.watchIfModified((error, result) => {
-        console.log("result: ", result, "  err: ", err);
-        this.loadingModal = false;
-        this.getAuction(this.$route.params.id);
+        try {
+          console.log("result: ", result);
+        } catch (err) {
+          console.log("error: ", error);
+        }
+
+        // this.loadingModal = false;
+        // this.getAuction(this.$route.params.id);
+        location.reload();
       });
+      console.log("Done");
     },
     async cancelAuction(auctionId) {
       this.loadingModal = true;
@@ -466,42 +488,67 @@ export default {
       });
     },
     async sendMessage() {
-      const result = await this.$chatroomInstance.sendMessageEvent(
-        this.identity,
-        this.roomHex,
-        this.myMessage
-      );
-      this.myMessage = "";
-    },
-    joinRoom() {
+      // const result = await this.$chatroomInstance.sendMessageEvent(this.identity, this.roomHex, this.myMessage)
+      // this.myMessage = ''
+
       try {
-        if (this.identity == "") {
-          alert("Please enter a username");
+        // await this.chatRoom.sendMessage(this.identity, this.roomHex, this.myMessage);
+
+        socket.emit("sendMessage", this.identity, this.roomHex, this.myMessage);
+        this.myMessage = "";
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async joinRoom() {
+      try {
+        if (!this.identity) {
+          this.error = "Please enter a username";
           return;
         }
-        this.joined = true;
         this.loading = true;
-        //this.$root.$data.globalState.joinChatRoom('test', this.identity) //0xffaadd11
+        // console.log(identity is ${this.identity} and room is ${this.roomHex});
 
-        this.$chatroomInstance.sendJoinEvent(this.identity, this.roomHex, "");
-        this.$chatroomInstance.subscribeToTopic(this.roomHex, data => {
-          const payload = JSON.parse(
-            this.$chatroomInstance.getWeb3().utils.hexToString(data.payload)
-          );
-          // check if already in users..(handle delay)
-          if (payload.type == "join") {
-            this.users.push(payload);
-            this.connected = true;
-          }
-          if (payload.type == "msg") {
-            this.messages.push(payload);
-            this.$nextTick(function() {
-              document.getElementById("compose").scrollIntoView();
-            });
+        // await this.chatRoom.joinRoom(this.identity, this.roomHex);
+        socket.emit("joinRoom", this.identity, this.roomHex);
+
+        // this.chatRoom.subscribeToMessages(({ type, sender, text }) => {
+        // if (type === 'join') {
+        //     this.users.push(sender);
+        // } else if (type === 'msg') {
+        //     this.messages.push({ sender, text });
+        // }
+        // });
+
+        socket.on("message", ({ type, sender, text }) => {
+          if (type === "join") {
+            // console.log(Sender is ${sender});
+
+            this.users = sender;
+
+            console.table(this.users);
+          } else if (type === "msg") {
+            // console.log(Messages is from:${sender} and text is ${text});
+            this.messages = text;
+            console.table(this.messages);
+            // console.table(Messaeg si :${this.messages})
+
+            // console.log(Messages is ${JSON.stringify(this.messages)});
+            // console.table(this.messages);
           }
         });
-      } catch (e) {
-        this.error = e.message;
+
+        socket.on("disconnected", ({ socketId, username }) => {
+          console.log("This is running");
+          const filteredItems = this.users.filter(
+            item => item.username !== username
+          );
+          this.users = filteredItems;
+        });
+
+        this.joined = true;
+      } catch (error) {
+        this.error = error.message;
       } finally {
         this.loading = false;
       }

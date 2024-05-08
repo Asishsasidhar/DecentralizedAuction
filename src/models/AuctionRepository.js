@@ -1,3 +1,4 @@
+import { cat } from "shelljs";
 import Config from "../config";
 
 export class AuctionRepository {
@@ -70,6 +71,16 @@ export class AuctionRepository {
   async watchIfCanceled(cb) {
     const currentBlock = await this.getCurrentBlock();
     this.contractInstance.events.AuctionCanceled(
+      {
+        filter: {},
+        fromBlock: currentBlock - 1
+      },
+      cb
+    );
+  }
+  async watchIfPaused(cb) {
+    const currentBlock = await this.getCurrentBlock();
+    this.contractInstance.events.AuctionPaused(
       {
         filter: {},
         fromBlock: currentBlock - 1
@@ -208,6 +219,41 @@ export class AuctionRepository {
       }
     });
   }
+  pause(auctionId) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        this.contractInstance.methods
+          .pauseAuction(auctionId)
+          .send({ from: this.account, gas: this.gas }, function(
+            err,
+            transaction
+          ) {
+            if (!err) resolve(transaction);
+            reject(err);
+          });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+  resume(auctionId) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        this.contractInstance.methods
+          .resumeAuction(auctionId)
+          .send({ from: this.account, gas: this.gas }, function(
+            err,
+            transaction
+          ) {
+            if (!err) resolve(transaction);
+            reject(err);
+          });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
 
   finalize(auctionId) {
     return new Promise(async (resolve, reject) => {
@@ -268,7 +314,7 @@ export class AuctionRepository {
       try {
         this.contractInstance.methods
           .withdrawBid(auctionId)
-          .call({ from: this.account, gas: this.gas }, function(
+          .send({ from: this.account, gas: this.gas }, function(
             err,
             transaction
           ) {
@@ -285,14 +331,18 @@ export class AuctionRepository {
       try {
         this.contractInstance.methods
           .extendDeadline(timeStamp, auctionId)
-          .call({ from: this.account, gas: this.gas }, function(
+          .send({ from: this.account, gas: this.gas }, function(
             err,
             transaction
           ) {
-            if (!err) resolve(transaction);
+            if (!err) {
+              resolve(transaction);
+              // console.log(`Trans is: ${transaction}`);
+            }
             reject(err);
           });
       } catch (e) {
+        // console.log(`Inside: ${e}`);
         reject(e);
       }
     });
