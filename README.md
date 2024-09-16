@@ -1,24 +1,5 @@
 # Decentralized Auction DApp
 
-## Team: Crypto Coders
-
-### Team Members
-
-- _Asish Malineni_
-  - CWID: 885197335
-  - Email: [asishsasidhar@csu.fullerton.edu](mailto:asishsasidhar@csu.fullerton.edu)
-- _Niharika Velidhi_
-  - CWID: 885665331
-  - Email: [velidhiniharika@csu.fullerton.edu](mailto:velidhiniharika@csu.fullerton.edu)
-- _Sai Mohan Mangesh_
-  - CWID: 885613026
-  - Email: [mohansaimangeshy@csu.fullerton.edu](mailto:mohansaimangeshy@csu.fullerton.edu)
-- _Vinay Kalluri_
-  - CWID: 885197459
-  - Email: [vinaykalluri@csu.fullerton.edu](mailto:vinaykalluri@csu.fullerton.edu)
-- _Vinith Bandoju_
-  - CWID: 885203323
-  - Email: [vinithbandoju@csu.fullerton.edu](mailto:vinithbandoju@csu.fullerton.edu)
 
 ## Project Overview
 
