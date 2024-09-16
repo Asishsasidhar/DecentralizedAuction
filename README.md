@@ -5,9 +5,6 @@
 
 Our project focuses on developing a fully decentralized auction application using blockchain technology. This DApp provides a platform for users to host and bid on auctions in a secure and transparent manner.
 
-## Initial Repository
-
-- [Project Repository on GitHub](https://github.com/ethereumbook/ethereumbook/blob/develop/12dapps.asciidoc)
 
 ## Project Execution and Challenges
 
